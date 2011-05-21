@@ -23,6 +23,10 @@ package
 		private var activeFlag: FlxSprite = null;
 		private var validation: FlxSprite = new FlxSprite(0, 0, validationImg);
 		private var bOver: Boolean = false;
+		
+		//TODO: bei FlxG.height - 5 zählt er die 5 vom oberen rand weg; wir wollen keine halben img sehen
+		public const MAX_PLAYGROUND_HEIGHT: int =  FlxG.height;
+		public const MAX_PLAYGROUND_WIDTH: int = 1500;
 
 		private var waves:water = new water(70,1);
 
@@ -35,7 +39,7 @@ package
 			
             player = new Player(20, 50);
 			FlxG.follow(player);
-			FlxG.followBounds(0, 0,2000, FlxG.height);
+			FlxG.followBounds(0, 0, MAX_PLAYGROUND_WIDTH, MAX_PLAYGROUND_HEIGHT);
 
 			//Startzeit
 			minutes = 1;
@@ -44,24 +48,12 @@ package
 			//Bojen
 			flagLayer = new FlxGroup();
 			//health: ob Bombe (0) , nix (2) oder Validation (1)
-		    flag = new Flag(100, 100); flag.health = 0;
-			flagLayer.add(flag);
-		    flag = new Flag(200, 200); flag.health = 2;
-			flagLayer.add(flag);
-		    flag = new Flag(300, 260); flag.health = 1;
-			flagLayer.add(flag);
-		    flag = new Flag(400, 70);  flag.health = 1;
-			flagLayer.add(flag);
-			flag = new Flag(500, 210); flag.health = 2;
-			flagLayer.add(flag);
-			flag = new Flag(600, 20);  flag.health = 2;
-			flagLayer.add(flag);
-			flag = new Flag(700, 10);  flag.health = 2;
-			flagLayer.add(flag);
-			flag = new Flag(800, 400);  flag.health = 1;
-			flagLayer.add(flag);
-			flag = new Flag(900, 150);  flag.health = 1;
-			flagLayer.add(flag);
+		    //flag = new Flag(100, 100); flag.health = 0;
+			
+			//generiert flaggen
+			for (var i: Number = 0; i < 50; i++) {
+				flagLayer.add(generateFlagAtRandomPos());
+			}
 			
 			add(flagLayer);
 			
@@ -72,9 +64,17 @@ package
 			textState.scrollFactor = new FlxPoint(0, 0);
 			add(textState);
 	
+			//validationImg goes with camera, 0 indicates background/HUD element
 			validation.scrollFactor = new FlxPoint(0, 0);
 			
 			this.add(player);
+		}
+		
+		private function generateFlagAtRandomPos():Flag
+		{
+			var heightRand : Number = Math.round(MAX_PLAYGROUND_HEIGHT * FlxU.random());
+			var widthRand : Number = Math.round(MAX_PLAYGROUND_WIDTH * FlxU.random());
+			return new Flag(widthRand, heightRand);
 		}
 		
 		private function collisionFlag(colFlag:FlxSprite, colPlayer:FlxSprite):void
@@ -90,10 +90,12 @@ package
 			var gameoverBlack: FlxText = new FlxText(80, 100, 200, "GAME OVER"); 
 		    gameoverBlack.setFormat(null, 25);
 			gameoverBlack.color = 0x00000000;
+			gameoverBlack.scrollFactor = new FlxPoint(0, 0);
 			add(gameoverBlack);
 			//text weiss
 			var gameoverWhite: FlxText = new FlxText(83, 102, 200, "GAME OVER"); //adds a 100px wide text field at position 0,0 (upper left)
 			gameoverWhite.setFormat(null, 24);
+			gameoverWhite.scrollFactor = new FlxPoint(0, 0);
 			add(gameoverWhite);
 		}
 		

@@ -14,7 +14,11 @@ package
             //dont let the boat go outside the screen
 			if (this.x <= 0) {
 				this.x = 0;
-			}
+			} 
+			//TODO: dont let the boat go outside x
+			/*else if (x > PlayState.MAX_PLAYGROUND_WIDTH - width) {
+				this.x = PlayState.MAX_PLAYGROUND_WIDTH;
+			}*/
 			if (this.y <= 0) {
 				this.y = 0;
 			} else if (y > FlxG.height - height) {
