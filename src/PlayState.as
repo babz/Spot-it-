@@ -34,7 +34,7 @@ package
 			
             player = new Player(20, 50);
 			FlxG.follow(player);
-			FlxG.followBounds(0, 0,2000,2000);
+			FlxG.followBounds(0, 0,2000, FlxG.height);
 
 			//Startzeit
 			minutes = 1;
@@ -45,31 +45,32 @@ package
 			//health: ob Bombe (0) , nix (2) oder Validation (1)
 		    flag = new Flag(100, 100); flag.health = 0;
 			flagLayer.add(flag);
-		    flag = new Flag(200, 100); flag.health = 2;
+		    flag = new Flag(200, 200); flag.health = 2;
 			flagLayer.add(flag);
-		    flag = new Flag(120, 200); flag.health = 1;
+		    flag = new Flag(300, 260); flag.health = 1;
 			flagLayer.add(flag);
-		    flag = new Flag(270, 70);  flag.health = 1;
+		    flag = new Flag(400, 70);  flag.health = 1;
 			flagLayer.add(flag);
-			flag = new Flag(250, 210); flag.health = 2;
+			flag = new Flag(500, 210); flag.health = 2;
 			flagLayer.add(flag);
-			flag = new Flag(100, 20);  flag.health = 2;
+			flag = new Flag(600, 20);  flag.health = 2;
 			flagLayer.add(flag);
-			flag = new Flag(200, 10);  flag.health = 2;
+			flag = new Flag(700, 10);  flag.health = 2;
 			flagLayer.add(flag);
-			flag = new Flag(10, 200);  flag.health = 1;
+			flag = new Flag(800, 400);  flag.health = 1;
 			flagLayer.add(flag);
-			flag = new Flag(270, 150);  flag.health = 1;
+			flag = new Flag(900, 150);  flag.health = 1;
 			flagLayer.add(flag);
 			
 			add(flagLayer);
 			
-			textState=FlxText(add(new FlxText(0, 0, 80, "Time left: 01:00"))); //adds a 100px wide text field at position 0,0 (upper left)
+			//adds a 100px wide text field at position 0,0 (upper left)
+			textState=FlxText(add(new FlxText(0, 0, 80, "Time left: 01:00")));
 	
 			this.add(player);
 		}
 		
-		private function CollisionEnemy(colFlag:FlxSprite, colPlayer:FlxSprite):void
+		private function collisionFlag(colFlag:FlxSprite, colPlayer:FlxSprite):void
 		{
 			activeFlag = colFlag;
 			activeFlag.loadGraphic(redFlag);
@@ -78,12 +79,13 @@ package
 		private function DrawGameOver(): void
 		{
 			//text schwarz
-			var gameoverBlack:  FlxText = new FlxText(80, 100, 200, "GAME OVER"); //adds a 100px wide text field at position 0,0 (upper left)		
+			//adds a 100px wide text field at position 0,0 (upper left)
+			var gameoverBlack: FlxText = new FlxText(80, 100, 200, "GAME OVER"); 
 		    gameoverBlack.setFormat(null, 25);
 			gameoverBlack.color = 0x00000000;
 			add(gameoverBlack);
 			//text weiss
-			var gameoverWhite:   FlxText = new FlxText(83, 102, 200, "GAME OVER"); //adds a 100px wide text field at position 0,0 (upper left)
+			var gameoverWhite: FlxText = new FlxText(83, 102, 200, "GAME OVER"); //adds a 100px wide text field at position 0,0 (upper left)
 			gameoverWhite.setFormat(null, 24);
 			add(gameoverWhite);
 		}
@@ -104,7 +106,7 @@ package
 			}
 			activeFlag = null;
 			
-			FlxU.overlap(flagLayer, player, CollisionEnemy);
+			FlxU.overlap(flagLayer, player, collisionFlag);
 
 			//Uhrzeit berechnen
 			cnt++;

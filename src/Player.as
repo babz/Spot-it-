@@ -11,12 +11,14 @@ package
         }
         public override function update():void
         {
-            super.update();
+            //dont let the boat go outside the screen
 			if (this.x <= 0) {
 				this.x = 0;
 			}
 			if (this.y <= 0) {
 				this.y = 0;
+			} else if (y > FlxG.height - height) {
+				y = FlxG.height - height;
 			}
         }
     }
