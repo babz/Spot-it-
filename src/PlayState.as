@@ -68,8 +68,12 @@ package
 			//adds a 100px wide text field at position 0,0 (upper left)
 			textState = new FlxText(0, 0, 80, "Time left: 01:00");
 			textState.size = 12;
+			//text goes with camera, 0 indicates background/HUD element
+			textState.scrollFactor = new FlxPoint(0, 0);
 			add(textState);
 	
+			validation.scrollFactor = new FlxPoint(0, 0);
+			
 			this.add(player);
 		}
 		
