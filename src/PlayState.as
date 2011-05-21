@@ -7,31 +7,31 @@ package
  
 	public class PlayState extends FlxState
 	{
-	    [Embed(source = "fahne.png")] private var EnemyImage:Class;
-		[Embed(source = "fahne2.png")] private var EnemyImage2:Class;
+	    [Embed(source = "fahne.png")] private var yellowFlag:Class;
+		[Embed(source = "fahne2.png")] private var redFlag:Class;
 		[Embed(source = "Kaboom.png")] private var Kaboom:Class;
-		[Embed(source = "validation.png")] private var ValidationImg:Class;
+		[Embed(source = "validation.png")] private var validationImg:Class;
 
 		public var player:Player;
-		public var minutes, seconds: int; 
+		public var minutes:int, seconds: int; 
 		private var secondsstr: String;
-		private var TextState: FlxText;
+		private var textState: FlxText;
 		private var cnt: int = 0;
 		
-		public var enemies:FlxGroup;
-		public var enemy: Enemy;
-		public var activeEnemy: FlxSprite = null;
+		public var flagLayer:FlxGroup;
+		public var flag: Flag;
+		public var activeFlag: FlxSprite = null;
 		public var kaboomImagae: FlxSprite = new FlxSprite(0, 0, Kaboom);
-		public var ValidationImage: FlxSprite = new FlxSprite(0, 0, ValidationImg);
+		public var validation: FlxSprite = new FlxSprite(0, 0, validationImg);
 		public var kaboomTime: int = 0;
 		public var bOver: Boolean = false;
 
-		private var sf:water = new water(70,1);
+		private var waves:water = new water(70,1);
 
 		override public function create():void
 		{
-			add(sf);
-			ValidationImage.visible = false;
+			add(waves);
+			validation.visible = false;
 			//Hintergrundfarbe
 			FlxState.bgColor = 0xFF0000CC;
 			
@@ -44,38 +44,38 @@ package
 			seconds = 0;
 			
 			//Bojen
-			enemies = new FlxGroup(); //enemies will be spawned into this later
+			flagLayer = new FlxGroup(); //enemies will be spawned into this later
 			//health: ob Bombe (0) , nix (2) oder Validation (1)
-		    enemy = new Enemy(100, 100); enemy.health = 0;
-			enemies.add(enemy);
-		    enemy = new Enemy(200, 100); enemy.health = 2;
-			enemies.add(enemy);
-		    enemy = new Enemy(120, 200); enemy.health = 1;
-			enemies.add(enemy);
-		    enemy = new Enemy(270, 70);  enemy.health = 1;
-			enemies.add(enemy);
-			enemy = new Enemy(250, 210); enemy.health = 2;
-			enemies.add(enemy);
-			enemy = new Enemy(100, 20);  enemy.health = 2;
-			enemies.add(enemy);
-			enemy = new Enemy(200, 10);  enemy.health = 2;
-			enemies.add(enemy);
-			enemy = new Enemy(10, 200);  enemy.health = 1;
-			enemies.add(enemy);
-			enemy = new Enemy(270, 150);  enemy.health = 1;
-			enemies.add(enemy);
+		    flag = new Flag(100, 100); flag.health = 0;
+			flagLayer.add(flag);
+		    flag = new Flag(200, 100); flag.health = 2;
+			flagLayer.add(flag);
+		    flag = new Flag(120, 200); flag.health = 1;
+			flagLayer.add(flag);
+		    flag = new Flag(270, 70);  flag.health = 1;
+			flagLayer.add(flag);
+			flag = new Flag(250, 210); flag.health = 2;
+			flagLayer.add(flag);
+			flag = new Flag(100, 20);  flag.health = 2;
+			flagLayer.add(flag);
+			flag = new Flag(200, 10);  flag.health = 2;
+			flagLayer.add(flag);
+			flag = new Flag(10, 200);  flag.health = 1;
+			flagLayer.add(flag);
+			flag = new Flag(270, 150);  flag.health = 1;
+			flagLayer.add(flag);
 			
-			add(enemies);
+			add(flagLayer);
 			
-			TextState=FlxText(add(new FlxText(0, 0, 80, "Time to death: 01:00"))); //adds a 100px wide text field at position 0,0 (upper left)
+			textState=FlxText(add(new FlxText(0, 0, 80, "Time to death: 01:00"))); //adds a 100px wide text field at position 0,0 (upper left)
 	
 			this.add(player);
 		}
 		
 		private function CollisionEnemy(colEnemy:FlxSprite, colPlayer:FlxSprite):void
 		{
-			activeEnemy = colEnemy;
-			activeEnemy.loadGraphic(EnemyImage2);
+			activeFlag = colEnemy;
+			activeFlag.loadGraphic(redFlag);
 		}
 		
 		private function DrawGameOver(): void
@@ -93,19 +93,19 @@ package
 		{
 			if (bOver) { return };
 			
-			if (ValidationImage.visible) {
+			if (validation.visible) {
 				if (FlxG.keys.justPressed('ENTER')) {
-					ValidationImage.visible = false;
+					validation.visible = false;
 				}
 				return;
 			}
 			var sl: int;
-			if (activeEnemy != null) {
-				activeEnemy.loadGraphic(EnemyImage);
+			if (activeFlag != null) {
+				activeFlag.loadGraphic(yellowFlag);
 			}
-			activeEnemy = null;
+			activeFlag = null;
 			
-			FlxU.overlap(enemies, player, CollisionEnemy);
+			FlxU.overlap(flagLayer, player, CollisionEnemy);
 
 			//Kaboom-Bild länger einblenden
 			if ((kaboomTime <= 100) && (kaboomTime > 0)) {
@@ -137,7 +137,7 @@ package
 				secondsstr = "" + seconds;
 				if (seconds < 10) { secondsstr = "0"+secondsstr ; }
 					
-				TextState.text = "Time to death: 0" + minutes + ":" + secondsstr;	
+				textState.text = "Time to death: 0" + minutes + ":" + secondsstr;	
 			}
 			
 			//Taste gedrückt?
@@ -153,23 +153,23 @@ package
 			} else if(FlxG.keys.DOWN)
 			{
 				player.y += 3;
-			} else if ((FlxG.keys.ENTER) && (activeEnemy!=null))
+			} else if ((FlxG.keys.ENTER) && (activeFlag!=null))
 			{
 				
-				if (activeEnemy.health == 0) {
+				if (activeFlag.health == 0) {
 				  kaboomTime = 100;
-			      kaboomImagae.x = activeEnemy.x - 20;
-				  kaboomImagae.y = activeEnemy.y - 20;
+			      kaboomImagae.x = activeFlag.x - 20;
+				  kaboomImagae.y = activeFlag.y - 20;
 				  kaboomImagae.visible = true;
 				  add(kaboomImagae);
-				}else if (activeEnemy.health==1){
-				  ValidationImage.x = 100;
-				  ValidationImage.y = 40;
-				  ValidationImage.visible = true;
-				  add(ValidationImage);
+				}else if (activeFlag.health==1){
+				  validation.x = 100;
+				  validation.y = 40;
+				  validation.visible = true;
+				  add(validation);
 				}
-				activeEnemy.kill();
-				activeEnemy = null;
+				activeFlag.kill();
+				activeFlag = null;
 			}
 			
 			super.update();
