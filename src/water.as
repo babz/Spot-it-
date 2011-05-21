@@ -4,8 +4,8 @@ package {
 	public class water extends FlxObject {
 		public static const NUM_STARS:Number = 30;
 		private var _stars:FlxGroup;
-		private var screenhight = 500;
-		private var screenwidht = 500;
+		private var screenhight:int = 500;
+		private var screenwidth:int = 500;
 		[Embed(source = "welle.png")] private var welle:Class;
 		[Embed(source = "welle2.png")] private var welle2:Class;
 		/**
@@ -23,7 +23,7 @@ package {
  
 			for ( var i:int = 0; i < water.NUM_STARS; i++ ) {
 				var tempheight: Number = Math.random() * screenhight;
-				var tempwidth: Number = Math.random() * screenwidht;
+				var tempwidth: Number = Math.random() * screenwidth;
 				var str:FlxSprite = new FlxSprite(tempwidth, tempheight);
 				var vel:Number = Math.random() * -16 * speedMultiplier;
  
@@ -36,7 +36,7 @@ package {
 				str.velocity.x = sinang * vel;
 				_stars.add(str);
 				
-				var str2:FlxSprite = new FlxSprite(Math.random() * screenwidht,  Math.random() * screenhight);
+				var str2:FlxSprite = new FlxSprite(Math.random() * screenwidth,  Math.random() * screenhight);
 				vel = Math.random() * -16 * speedMultiplier;
 				transp = (Math.round(16 * ( -vel / speedMultiplier) - 1) << 24);
 				
@@ -70,10 +70,10 @@ package {
  
 			for (var i:int = 0; i < _stars.members.length; i++) {
 				var star:FlxSprite = _stars.members[i] as FlxSprite;
-				if (star.x > screenwidht) {
+				if (star.x > screenwidth) {
 					star.x = 0;
 				} else if (star.x < 0) {
-					star.x = screenwidht;
+					star.x = screenwidth;
 				}
 				if (star.y > screenhight) {
 					star.y = 0;

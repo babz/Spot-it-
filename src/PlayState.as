@@ -9,7 +9,6 @@ package
 	{
 	    [Embed(source = "fahne.png")] private var yellowFlag:Class;
 		[Embed(source = "fahne2.png")] private var redFlag:Class;
-		[Embed(source = "Kaboom.png")] private var Kaboom:Class;
 		[Embed(source = "validation.png")] private var validationImg:Class;
 
 		public var player:Player;
@@ -21,9 +20,7 @@ package
 		public var flagLayer:FlxGroup;
 		public var flag: Flag;
 		public var activeFlag: FlxSprite = null;
-		public var kaboomImagae: FlxSprite = new FlxSprite(0, 0, Kaboom);
 		public var validation: FlxSprite = new FlxSprite(0, 0, validationImg);
-		public var kaboomTime: int = 0;
 		public var bOver: Boolean = false;
 
 		private var waves:water = new water(70,1);
@@ -44,7 +41,7 @@ package
 			seconds = 0;
 			
 			//Bojen
-			flagLayer = new FlxGroup(); //enemies will be spawned into this later
+			flagLayer = new FlxGroup();
 			//health: ob Bombe (0) , nix (2) oder Validation (1)
 		    flag = new Flag(100, 100); flag.health = 0;
 			flagLayer.add(flag);
@@ -67,26 +64,28 @@ package
 			
 			add(flagLayer);
 			
-			textState=FlxText(add(new FlxText(0, 0, 80, "Time to death: 01:00"))); //adds a 100px wide text field at position 0,0 (upper left)
+			textState=FlxText(add(new FlxText(0, 0, 80, "Time left: 01:00"))); //adds a 100px wide text field at position 0,0 (upper left)
 	
 			this.add(player);
 		}
 		
-		private function CollisionEnemy(colEnemy:FlxSprite, colPlayer:FlxSprite):void
+		private function CollisionEnemy(colFlag:FlxSprite, colPlayer:FlxSprite):void
 		{
-			activeFlag = colEnemy;
+			activeFlag = colFlag;
 			activeFlag.loadGraphic(redFlag);
 		}
 		
 		private function DrawGameOver(): void
 		{
-			var gameoverText:  FlxText = new FlxText(80, 100, 200, "GAME OVER"); //adds a 100px wide text field at position 0,0 (upper left)		
-		    gameoverText.setFormat(null, 25);
-			gameoverText.color = 0x00000000;
-			add(gameoverText);
-			var gameoverText2:   FlxText = new FlxText(83, 102, 200, "GAME OVER"); //adds a 100px wide text field at position 0,0 (upper left)
-			gameoverText2.setFormat(null, 24);
-			add(gameoverText2);
+			//text schwarz
+			var gameoverBlack:  FlxText = new FlxText(80, 100, 200, "GAME OVER"); //adds a 100px wide text field at position 0,0 (upper left)		
+		    gameoverBlack.setFormat(null, 25);
+			gameoverBlack.color = 0x00000000;
+			add(gameoverBlack);
+			//text weiss
+			var gameoverWhite:   FlxText = new FlxText(83, 102, 200, "GAME OVER"); //adds a 100px wide text field at position 0,0 (upper left)
+			gameoverWhite.setFormat(null, 24);
+			add(gameoverWhite);
 		}
 		
 		override public function update():void
@@ -107,16 +106,6 @@ package
 			
 			FlxU.overlap(flagLayer, player, CollisionEnemy);
 
-			//Kaboom-Bild länger einblenden
-			if ((kaboomTime <= 100) && (kaboomTime > 0)) {
-				kaboomTime --;
-				if (kaboomTime == 0) {
-					kaboomImagae.visible = false;
-					bOver = true;
-					DrawGameOver();
-				}
-			}
-			
 			//Uhrzeit berechnen
 			cnt++;
 			if (cnt >= 60) {
@@ -137,7 +126,7 @@ package
 				secondsstr = "" + seconds;
 				if (seconds < 10) { secondsstr = "0"+secondsstr ; }
 					
-				textState.text = "Time to death: 0" + minutes + ":" + secondsstr;	
+				textState.text = "Time left: 0" + minutes + ":" + secondsstr;	
 			}
 			
 			//Taste gedrückt?
@@ -155,27 +144,15 @@ package
 				player.y += 3;
 			} else if ((FlxG.keys.ENTER) && (activeFlag!=null))
 			{
-				
-				if (activeFlag.health == 0) {
-				  kaboomTime = 100;
-			      kaboomImagae.x = activeFlag.x - 20;
-				  kaboomImagae.y = activeFlag.y - 20;
-				  kaboomImagae.visible = true;
-				  add(kaboomImagae);
-				}else if (activeFlag.health==1){
-				  validation.x = 100;
-				  validation.y = 40;
-				  validation.visible = true;
-				  add(validation);
-				}
+				validation.x = 100;
+				validation.y = 40;
+				validation.visible = true;
+				add(validation);
+				  
 				activeFlag.kill();
 				activeFlag = null;
 			}
-			
 			super.update();
-			
 		}
-		
-
 	}
 }
