@@ -11,17 +11,18 @@ package
 		[Embed(source = "fahne2.png")] private var redFlag:Class;
 		[Embed(source = "validation.png")] private var validationImg:Class;
 
-		public var player:Player;
-		public var minutes:int, seconds: int; 
-		private var secondsstr: String;
+		private var player:Player;
+		
 		private var textState: FlxText;
+		private var minutes:int, seconds: int; 
+		private var secondsstr: String;
 		private var cnt: int = 0;
 		
-		public var flagLayer:FlxGroup;
-		public var flag: Flag;
-		public var activeFlag: FlxSprite = null;
-		public var validation: FlxSprite = new FlxSprite(0, 0, validationImg);
-		public var bOver: Boolean = false;
+		private var flagLayer:FlxGroup;
+		private var flag: Flag;
+		private var activeFlag: FlxSprite = null;
+		private var validation: FlxSprite = new FlxSprite(0, 0, validationImg);
+		private var bOver: Boolean = false;
 
 		private var waves:water = new water(70,1);
 
@@ -65,7 +66,9 @@ package
 			add(flagLayer);
 			
 			//adds a 100px wide text field at position 0,0 (upper left)
-			textState=FlxText(add(new FlxText(0, 0, 80, "Time left: 01:00")));
+			textState = new FlxText(0, 0, 80, "Time left: 01:00");
+			textState.size = 12;
+			add(textState);
 	
 			this.add(player);
 		}
@@ -89,6 +92,8 @@ package
 			gameoverWhite.setFormat(null, 24);
 			add(gameoverWhite);
 		}
+		
+		
 		
 		override public function update():void
 		{
@@ -128,7 +133,7 @@ package
 				secondsstr = "" + seconds;
 				if (seconds < 10) { secondsstr = "0"+secondsstr ; }
 					
-				textState.text = "Time left: 0" + minutes + ":" + secondsstr;	
+				textState.text = "Time left: 0" + minutes + ":" + secondsstr;
 			}
 			
 			//Taste gedrückt?
