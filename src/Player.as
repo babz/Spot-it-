@@ -16,9 +16,9 @@ package
 				this.x = 0;
 			} 
 			//TODO: dont let the boat go outside x
-			/*else if (x > PlayState.MAX_PLAYGROUND_WIDTH - width) {
-				this.x = PlayState.MAX_PLAYGROUND_WIDTH;
-			}*/
+			else if (x > PlayState.MAX_PLAYGROUND_WIDTH - width) {
+				this.x = PlayState.MAX_PLAYGROUND_WIDTH-this.width;
+			}
 			if (this.y <= 0) {
 				this.y = 0;
 			} else if (y > FlxG.height - height) {

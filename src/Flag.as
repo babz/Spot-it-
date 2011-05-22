@@ -5,9 +5,13 @@ package
     {
         [Embed(source = "fahne.png")] private var yellowFlag:Class;
 
-
         public function Flag(X:Number = 0, Y:Number = 0):void
         {
+			//Nach Raster orientiert
+			X = Math.floor(X / 100) * 100;
+			Y = Math.floor(Y / 100) * 100;
+			//damit oberer Rand frei bleibt
+			Y = Y + 32;
             super(X, Y, yellowFlag);
         }
 

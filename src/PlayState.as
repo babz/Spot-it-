@@ -19,6 +19,7 @@ package
 		private var cnt: int = 0;
 		
 		private var flagLayer:FlxGroup;
+		private var valitationlist: FlxGroup;
 		private var flag: Flag;
 		private var activeFlag: FlxSprite = null;
 		private var validation: FlxSprite = new FlxSprite(0, 0, validationImg);
@@ -26,7 +27,8 @@ package
 		
 		//TODO: bei FlxG.height - 5 zählt er die 5 vom oberen rand weg; wir wollen keine halben img sehen
 		public const MAX_PLAYGROUND_HEIGHT: int =  FlxG.height;
-		public const MAX_PLAYGROUND_WIDTH: int = 1500;
+		public static const MAX_PLAYGROUND_WIDTH: int = 1500;
+		public const VALITATIONCOUNT: int = 20;
 
 		private var waves:water = new water(70,1);
 
@@ -38,6 +40,7 @@ package
 			FlxState.bgColor = 0xFF0000CC;
 			
             player = new Player(20, 50);
+			
 			FlxG.follow(player);
 			FlxG.followBounds(0, 0, MAX_PLAYGROUND_WIDTH, MAX_PLAYGROUND_HEIGHT);
 
@@ -47,12 +50,17 @@ package
 			
 			//Bojen
 			flagLayer = new FlxGroup();
+			valitationlist = new FlxGroup();
 			//health: ob Bombe (0) , nix (2) oder Validation (1)
-		    //flag = new Flag(100, 100); flag.health = 0;
+		    var flag: Flag;
 			
 			//generiert flaggen
-			for (var i: Number = 0; i < 50; i++) {
-				flagLayer.add(generateFlagAtRandomPos());
+			for (var i: Number = 0; i < 70; i++) {
+				flag = generateFlagAtRandomPos();
+				flagLayer.add(flag);
+				if (i <= VALITATIONCOUNT) { 
+				  valitationlist.add(flag);
+				}
 			}
 			
 			add(flagLayer);
@@ -155,15 +163,24 @@ package
 			} else if(FlxG.keys.DOWN)
 			{
 				player.y += 3;
-			} else if ((FlxG.keys.ENTER) && (activeFlag!=null))
+			} else if ((FlxG.keys.ENTER) && (activeFlag!=null) && (activeFlag.active))
 			{
-				validation.x = 100;
-				validation.y = 40;
-				validation.visible = true;
-				add(validation);
+				if (valitationlist.members.indexOf(activeFlag)>0 ) {
+				  validation.x = 100;
+				  validation.y = 40;
+				  validation.visible = true;
+				  add(validation);
+				}
 				  
-				activeFlag.kill();
-				activeFlag = null;
+				//activeFlag.kill();  //doch nicht killen
+				//TODO: nicht eins rein schreiben, sondern die Anzahl der Valitations rundherum
+				var valitionText: FlxText = new FlxText(activeFlag.x+15, activeFlag.y+15, 200, "1"); //adds a 100px wide text field at position 0,0 (upper left)
+			    valitionText.setFormat(null, 16);
+				valitionText.color = 0x00000000;
+			    add(valitionText);
+				//todo: valitationText hinter dem Player zeichnen
+				
+				activeFlag.active = false;
 			}
 			super.update();
 		}
