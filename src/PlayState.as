@@ -1,9 +1,7 @@
 package
 {
-	import flash.display.InteractiveObject;
-	import org.flixel.*;
 	import flash.utils.*;
-	import org.flixel.data.FlxAnim;
+	import org.flixel.*;
  
 	public class PlayState extends FlxState
 	{
@@ -11,6 +9,7 @@ package
 		[Embed(source = "fahne2.png")] private var redFlag:Class;
 		[Embed(source = "fahneValidation.png")] private var validationFlag:Class;
 		[Embed(source = "validation.png")] private var validationImg:Class;
+		[Embed(source = "tada.mp3")] private var validationSound:Class;
 
 		private var player:Player;
 		
@@ -84,8 +83,6 @@ package
 			scoreText.scrollFactor = new FlxPoint(0, 0);
 			add(scoreText);
 			
-			//score
-	
 			//validationImg goes with camera, 0 indicates background/HUD element
 			validation.scrollFactor = new FlxPoint(0, 0);
 			
@@ -170,7 +167,10 @@ package
 		}
 		  
 		  
-		
+		public function playSound():void 
+		{
+			FlxG.play(validationSound, 1.0, false);
+		}
 		
 		override public function update():void
 		{
@@ -178,6 +178,7 @@ package
 			
 			if (validation.visible) {
 				if (FlxG.keys.justPressed('ENTER')) {
+					playSound();
 					validation.visible = false;
 				}
 				return;
