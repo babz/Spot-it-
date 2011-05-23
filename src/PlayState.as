@@ -14,16 +14,18 @@ package
 		private var player:Player;
 		
 		private var textState: FlxText;
+		private var scoreText: FlxText;
 		private var minutes:int, seconds: int; 
 		private var secondsstr: String;
 		private var cnt: int = 0;
+		private var score: int = 50;
 		
 		private var flagLayer:FlxGroup;
 		private var valitationlist: FlxGroup;
 		private var flag: Flag;
 		private var activeFlag: FlxSprite = null;
 		private var validation: FlxSprite = new FlxSprite(0, 0, validationImg);
-		private var bOver: Boolean = false;
+		private var bOver: Boolean = false; //GameOver
 		
 		//TODO: bei FlxG.height - 5 zählt er die 5 vom oberen rand weg; wir wollen keine halben img sehen
 		public const MAX_PLAYGROUND_HEIGHT: int =  FlxG.height;
@@ -71,11 +73,26 @@ package
 			//text goes with camera, 0 indicates background/HUD element
 			textState.scrollFactor = new FlxPoint(0, 0);
 			add(textState);
+			
+			//Score Textfeld
+			scoreText = new FlxText(FlxG.width-55, 0, 50, "");
+			scoreText.size = 12;
+			scoreText.alignment = "right";
+			//text goes with camera
+			scoreText.scrollFactor = new FlxPoint(0, 0);
+			add(scoreText);
+			
+			//score
 	
 			//validationImg goes with camera, 0 indicates background/HUD element
 			validation.scrollFactor = new FlxPoint(0, 0);
 			
 			this.add(player);
+		}
+		
+		private function getScore():String
+		{
+			return new String(score);
 		}
 		
 		private function generateFlagAtRandomPos():Flag
@@ -149,6 +166,9 @@ package
 					
 				textState.text = "Time left: 0" + minutes + ":" + secondsstr;
 			}
+			
+			//aktuellen score anzeigen
+			scoreText.text = "Score:\n" + getScore();
 			
 			//Taste gedrückt?
 			if(FlxG.keys.RIGHT)
