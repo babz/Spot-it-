@@ -8,6 +8,7 @@ package
         public function Player(X:Number = 0, Y:Number = 0):void
         {
             super(X, Y, playerImg);
+			facing = 1;
         }
         public override function update():void
         {
