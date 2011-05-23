@@ -9,8 +9,11 @@ package
 	    [Embed(source = "fahne.png")] private var yellowFlag:Class;
 		[Embed(source = "fahne2.png")] private var redFlag:Class;
 		[Embed(source = "fahneValidation.png")] private var validationFlag:Class;
-		[Embed(source = "validation.png")] private var validationImg:Class;
+		[Embed(source = "validation1.png")] private var validationImg:Class;
+		[Embed(source = "validationtext.png")] private var validationTextImg:Class;
 		[Embed(source = "tada.mp3")] private var validationSound:Class;
+		[Embed(source = "arrow.png")] private var selectedCatImg:Class;
+
 
 		private var player:Player;
 		private var playerObject: FlxObject;
@@ -28,6 +31,8 @@ package
 		private var flag: Flag;
 		private var activeFlag: FlxSprite = null;
 		private var validation: FlxSprite = new FlxSprite(0, 0, validationImg);
+		private var validationText: FlxSprite = new FlxSprite(0, 0, validationTextImg);
+		
 		private var bOver: Boolean = false; //GameOver
 		
 		//TODO: bei FlxG.height - 5 zählt er die 5 vom oberen rand weg; wir wollen keine halben img sehen
@@ -46,6 +51,7 @@ package
 			
 			add(waves);
 			validation.visible = false;
+			validationText.visible = false;
 			//Hintergrundfarbe
 			FlxState.bgColor = 0xFF0000CC;
 			
@@ -93,7 +99,7 @@ package
 	
 			//validationImg goes with camera, 0 indicates background/HUD element
 			validation.scrollFactor = new FlxPoint(0, 0);
-			
+			validationText.scrollFactor = new FlxPoint(0, 0);
 			playerObject=this.add(player);
 		}
 		
@@ -154,6 +160,37 @@ package
 			return cnt;
 		}
 		
+		private function hasClickedOnRadioButton(X:int,Y: int): Boolean
+		{
+			if ((X<320) || (X>330)) return false;
+			if ((Y<110) || (Y>285)) return false;
+			
+			if (Y < 125) { //artificial areas
+				
+			}
+			else if (Y < 152) { //croplands
+				
+			}
+			else if (Y < 180) { //Tree cover
+				
+			} 
+			else if (Y < 207) { //natural vegetation
+				
+			} 
+			else if (Y < 232) { //urban and built-up areas
+				
+			} 
+			else if (Y < 259) { //shrub cover
+				
+			} 
+			else if (Y < 284) { //not in list
+				
+			} else return false
+			
+
+			return true;
+		}
+		
 		private function isBojeAlreadyThere(X:int,Y: int): Boolean
 		{
 			//Nach Raster orientiert
@@ -178,10 +215,15 @@ package
 		{
 			if (bOver) { return };
 			
-			if (validation.visible) {
-				if (FlxG.keys.justPressed('ENTER')) {
-					FlxG.play(validationSound, 1.0, false);
+			if (validation.visible) {	
+				var screenX:Number = FlxG.mouse.screenX;	
+				var screenY:Number = FlxG.mouse.screenY;	
+				var pressed:Boolean = FlxG.mouse.pressed();	
+				
+				if ((pressed) && (hasClickedOnRadioButton( screenX, screenY))) {
 					validation.visible = false;
+					validationText.visible = false;
+					FlxG.mouse.hide();
 				}
 				return;
 			}
@@ -236,16 +278,7 @@ package
 			{
 				player.y += 3;
 			} else if ((FlxG.keys.ENTER) && (activeFlag!=null) && (activeFlag.active))
-			{
-				if (valitationlist.members.indexOf(activeFlag)>0 ) {
-				  validation.x = 100;
-				  validation.y = 40;
-				  validation.visible = true;
-				  add(validation);
-				  activeFlag.loadGraphic(validationFlag);
-				  score++;
-				}
-				 
+			{	 
 				var validationcnt: int = 0;
 				validationcnt = getValidationCnt(activeFlag);
 				var valitionText: FlxText = new FlxText(activeFlag.x+15, activeFlag.y+15, 200, ""+validationcnt); //adds a 100px wide text field at position 0,0 (upper left)
@@ -260,6 +293,23 @@ package
 				add(playerObject);
 				
 				activeFlag.active = false;
+				
+				if (valitationlist.members.indexOf(activeFlag) > 0 ) {
+				  FlxG.play(validationSound, 1.0, false);
+				  FlxG.mouse.show();
+				  FlxG.mouse.load(selectedCatImg);
+				  validation.x = 100;
+				  validation.y = 100;
+				  validation.visible = true;
+				  add(validation);
+				  validationText.x = validation.x + validation.width;
+				  validationText.y = 100;
+				  validationText.visible = true;
+				  add(validationText);
+				  
+				  activeFlag.loadGraphic(validationFlag);
+				  score++;
+				}
 			}
 			super.update();
 		}
