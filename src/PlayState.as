@@ -289,7 +289,7 @@ package
 		public function winScreen():void
 		{
 			player.loadGraphic(gameWon);
-			var youwon: FlxText = new FlxText(80, 300, 200, "GOOD JOB!"); 
+			var youwon: FlxText = new FlxText(80, 250, 200, "GOOD JOB!"); 
 		    youwon.setFormat(null, 25);
 			youwon.scrollFactor = new FlxPoint(0, 0);
 			add(youwon);
