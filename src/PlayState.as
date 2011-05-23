@@ -11,6 +11,8 @@ package
 		[Embed(source = "fahneValidation.png")] private var validationFlag:Class;
 		[Embed(source = "validation.png")] private var validationImg:Class;
 		[Embed(source = "tada.mp3")] private var validationSound:Class;
+		[Embed(source = "boat_toLeft.png")] private var playerImgLeft:Class;
+		[Embed(source = "boat_big.png")] private var playerImgRight:Class;
 
 		private var player:Player;
 		private var playerObject: FlxObject;
@@ -26,6 +28,7 @@ package
 		private var flagLayer:FlxGroup;
 		private var valitationlist: FlxGroup;
 		private var flag: Flag;
+		//container für die jew aktuelle boje/flagge
 		private var activeFlag: FlxSprite = null;
 		private var validation: FlxSprite = new FlxSprite(0, 0, validationImg);
 		private var bOver: Boolean = false; //GameOver
@@ -42,7 +45,7 @@ package
 		override public function create():void
 		{
 			//globale lautstärkenänderung
-			FlxG.volume = 1;
+			FlxG.volume = 0.7;
 			
 			add(waves);
 			validation.visible = false;
@@ -224,10 +227,13 @@ package
 			//Taste gedrückt?
 			if(FlxG.keys.RIGHT)
 			{
+				player.right;
+				player.loadGraphic(playerImgRight, false, true);
 				player.x += 3;
-				//player.facing = DOWN;
 			} else if(FlxG.keys.LEFT)
 			{
+				player.left;
+				player.loadGraphic(playerImgLeft, false, true);
 				player.x -= 3;
 			} else if(FlxG.keys.UP)
 			{
