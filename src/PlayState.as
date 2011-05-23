@@ -30,9 +30,10 @@ package
 		
 		//TODO: bei FlxG.height - 5 zählt er die 5 vom oberen rand weg; wir wollen keine halben img sehen
 		public const MAX_PLAYGROUND_HEIGHT: int =  FlxG.height;
-		public static const MAX_PLAYGROUND_WIDTH: int = 1500;
+		public static const MAX_PLAYGROUND_WIDTH: int = 2000;
 		public const VALITATIONCOUNT: int = 15;
 		public static const BOJEN_DISTANCE: int = 100;
+		public const BOJENCOUNT: int = 50;
 
 		private var waves:water = new water(70,1);
 
@@ -55,11 +56,10 @@ package
 			//Bojen
 			flagLayer = new FlxGroup();
 			valitationlist = new FlxGroup();
-			//health: ob Bombe (0) , nix (2) oder Validation (1)
 		    var flag: Flag;
 			
 			//generiert flaggen
-			for (var i: Number = 0; i < 50; i++) {
+			for (var i: Number = 0; i < BOJENCOUNT; i++) {
 				flag = generateFlagAtRandomPos();
 				flagLayer.add(flag);
 				if (i <= VALITATIONCOUNT) { 
@@ -149,7 +149,7 @@ package
 			return cnt;
 		}
 		
-		private function isBojeAlreadyThere(X,Y: int): Boolean
+		private function isBojeAlreadyThere(X:int,Y: int): Boolean
 		{
 			//Nach Raster orientiert
 			X = Math.floor(X / PlayState.BOJEN_DISTANCE) * PlayState.BOJEN_DISTANCE;
