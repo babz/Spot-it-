@@ -14,6 +14,7 @@ package
 		[Embed(source = "validation3.png")] private var validationImg3:Class;
 		[Embed(source = "validationtext.png")] private var validationTextImg:Class;
 		[Embed(source = "fisch.png")] private var fischImg:Class;
+		[Embed(source = "end.jpg")] private var gameWon:Class;
 		[Embed(source = "krake.png")] private var krakeImg:Class;
 		
 		//Sounds
@@ -284,6 +285,15 @@ package
 			
 			return false;
 		}
+		
+		public function winScreen():void
+		{
+			player.loadGraphic(gameWon);
+			var youwon: FlxText = new FlxText(80, 300, 200, "GOOD JOB!"); 
+		    youwon.setFormat(null, 25);
+			youwon.scrollFactor = new FlxPoint(0, 0);
+			add(youwon);
+		}
 	
 		override public function update():void
 		{
@@ -326,7 +336,7 @@ package
 						seconds = 0;
 						minutes = 0;
 						bOver = true;
-						DrawGameOver();
+						winScreen();
 						
 					} else {
 					  minutes --;
