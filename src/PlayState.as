@@ -9,11 +9,12 @@ package
 	    [Embed(source = "fahne.png")] private var yellowFlag:Class;
 		[Embed(source = "fahne2.png")] private var redFlag:Class;
 		[Embed(source = "fahneValidation.png")] private var validationFlag:Class;
-		[Embed(source = "krake.gif")] private var krakenImg:Class;
 		[Embed(source = "validation1.png")] private var validationImg:Class;
 		[Embed(source = "validation2.png")] private var validationImg2:Class;
 		[Embed(source = "validation3.png")] private var validationImg3:Class;
 		[Embed(source = "validationtext.png")] private var validationTextImg:Class;
+		[Embed(source = "fisch.png")] private var fischImg:Class;
+		[Embed(source = "krake.png")] private var krakeImg:Class;
 		
 		//Sounds
 		[Embed(source = "tada.mp3")] private var validationFound:Class;
@@ -36,6 +37,8 @@ package
 		private var button:FlxButton;
 		
 		private var flagLayer:FlxGroup;
+		private var fishLayer: FlxGroup;
+		private var krakeLayer: FlxGroup;
 		private var valitationlist: FlxGroup;
 		private var flag: Flag;
 		//container für die jew aktuelle boje/flagge
@@ -50,6 +53,8 @@ package
 		public const VALITATIONCOUNT: int = 15;
 		public static const BOJEN_DISTANCE: int = 100;
 		public const BOJENCOUNT: int = 50;
+		public const KRAKENCOUNT: int = 5;
+		public const FISCHCOUNT: int = 3;
 
 		private var waves:water = new water(70, 1);
 
@@ -58,7 +63,7 @@ package
 			//globale lautstärkenänderung
 			FlxG.volume = 0.7;
 			//hintergrundmusik
-			FlxG.playMusic(backgroundMusic, 1.0);
+			FlxG.playMusic(backgroundMusic, 0.5);
 			
 			add(waves);
 			validation.visible = false;
@@ -74,6 +79,27 @@ package
 			//Startzeit
 			minutes = 1;
 			seconds = 0;
+			
+			//fische
+			fishLayer = new FlxGroup();
+		    var fish: FlxSprite;
+			for (var i: Number = 0; i < FISCHCOUNT; i++) {
+				fish= generateFishAtRandomPos();
+				fishLayer.add(fish);
+			}
+			
+			add(fishLayer);
+			
+			
+			//Krake
+			krakeLayer = new FlxGroup();
+		    var krake: FlxSprite;
+			for (var i: Number = 0; i < KRAKENCOUNT; i++) {
+				krake= generateKrakeAtRandomPos();
+				krakeLayer.add(krake);
+			}
+			
+			add(krakeLayer);
 			
 			//Bojen
 			flagLayer = new FlxGroup();
@@ -129,6 +155,26 @@ package
 			return new Flag(widthRand, heightRand);
 		}
 		
+		private function generateKrakeAtRandomPos():FlxSprite
+		{
+			var heightRand : Number = Math.round((MAX_PLAYGROUND_HEIGHT-40) * FlxU.random());
+			var widthRand : Number = Math.round((MAX_PLAYGROUND_WIDTH - 40) * FlxU.random());
+			if ((heightRand < 150) && (widthRand < 150)) { 
+				return generateKrakeAtRandomPos() 
+			} else {
+				return new FlxSprite(widthRand, heightRand, krakeImg);
+				
+			}
+		}		
+
+		private function generateFishAtRandomPos():FlxSprite
+		{
+			var heightRand : Number = Math.round(MAX_PLAYGROUND_HEIGHT * FlxU.random());
+			var widthRand : Number = Math.round(MAX_PLAYGROUND_WIDTH * FlxU.random());
+			return new FlxSprite(widthRand, heightRand, fischImg);
+		}
+		
+		
 		private function collisionFlag(colFlag:FlxSprite, colPlayer:FlxSprite):void
 		{
 			if (activeFlag==null) {
@@ -137,18 +183,35 @@ package
 			}
 		}
 		
+		private function collisionKrake(colKrake:FlxSprite, colPlayer:FlxSprite):void
+		{
+			DrawGameOver();
+			bOver = true;
+		}
+		
+		private function collisionFish(colFish:FlxSprite, colPlayer:FlxSprite):void
+		{
+			colFish.visible = false;
+			
+			if (colFish.active) {
+			   score++;
+			}
+			colFish.active = false;
+		}
+		
+		
 		private function DrawGameOver(): void
 		{
 			//text schwarz
 			//adds a 100px wide text field at position 0,0 (upper left)
-			var gameoverBlack: FlxText = new FlxText(80, 100, 200, "GAME OVER"); 
-		    gameoverBlack.setFormat(null, 25);
+			var gameoverBlack: FlxText = new FlxText(200, 200, 400, "GAME OVER"); 
+		    gameoverBlack.setFormat(null, 37);
 			gameoverBlack.color = 0x00000000;
 			gameoverBlack.scrollFactor = new FlxPoint(0, 0);
 			add(gameoverBlack);
 			//text weiss
-			var gameoverWhite: FlxText = new FlxText(83, 102, 200, "GAME OVER"); //adds a 100px wide text field at position 0,0 (upper left)
-			gameoverWhite.setFormat(null, 24);
+			var gameoverWhite: FlxText = new FlxText(203, 202, 400, "GAME OVER"); //adds a 100px wide text field at position 0,0 (upper left)
+			gameoverWhite.setFormat(null, 36);
 			gameoverWhite.scrollFactor = new FlxPoint(0, 0);
 			add(gameoverWhite);
 		}
@@ -247,6 +310,10 @@ package
 			activeFlag = null;
 			
 			FlxU.overlap(flagLayer, player, collisionFlag);
+			
+			FlxU.overlap(krakeLayer, player, collisionKrake);
+			
+			FlxU.overlap(fishLayer, player, collisionFish);
 
 			//Uhrzeit berechnen
 			cnt++;
