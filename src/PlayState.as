@@ -10,6 +10,8 @@ package
 		[Embed(source = "fahne2.png")] private var redFlag:Class;
 		[Embed(source = "fahneValidation.png")] private var validationFlag:Class;
 		[Embed(source = "validation1.png")] private var validationImg:Class;
+		[Embed(source = "validation2.png")] private var validationImg2:Class;
+		[Embed(source = "validation3.png")] private var validationImg3:Class;
 		[Embed(source = "validationtext.png")] private var validationTextImg:Class;
 		
 		//Sounds
@@ -309,6 +311,15 @@ package
 				  FlxG.play(validationFound, 1.0, false);
 				  FlxG.mouse.show();
 				  FlxG.mouse.load(selectedCatImg);
+				  var i: int = (3*FlxU.random()) % 3;
+				  if (i == 0) {
+					  validation.loadGraphic(validationImg);
+				  } else if (i == 1) {
+					   validation.loadGraphic(validationImg2);
+				  } else if (i == 2) {
+					   validation.loadGraphic(validationImg3);
+				  }
+				  
 				  validation.x = 100;
 				  validation.y = 100;
 				  validation.visible = true;
