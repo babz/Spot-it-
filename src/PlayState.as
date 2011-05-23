@@ -13,18 +13,22 @@ package
 		[Embed(source = "validation2.png")] private var validationImg2:Class;
 		[Embed(source = "validation3.png")] private var validationImg3:Class;
 		[Embed(source = "validationtext.png")] private var validationTextImg:Class;
-		[Embed(source = "fisch.png")] private var fischImg:Class;
+		
 		[Embed(source = "end.jpg")] private var gameWon:Class;
+		[Embed(source = "StartScreen.jpg")] private var startImg:Class;
+		
+		[Embed(source = "fisch.png")] private var fischImg:Class;
 		[Embed(source = "krake.png")] private var krakeImg:Class;
+		[Embed(source = "arrow.png")] private var selectedCatImg:Class;
+		[Embed(source = "boat_toLeft.png")] private var playerImgLeft:Class;
+		[Embed(source = "boat_big.png")] private var playerImgRight:Class;
 		
 		//Sounds
 		[Embed(source = "tada.mp3")] private var validationFound:Class;
 		[Embed(source = "validationSound.mp3")] private var validationSound:Class;
 		[Embed(source = "Freestyler.mp3")] private var backgroundMusic:Class;
-		
-		[Embed(source = "arrow.png")] private var selectedCatImg:Class;
-		[Embed(source = "boat_toLeft.png")] private var playerImgLeft:Class;
-		[Embed(source = "boat_big.png")] private var playerImgRight:Class;
+		[Embed(source = "collectFish.mp3")] private var collectFish:Class;
+		[Embed(source = "collideOcto.mp3")] private var collideOcto:Class;
 
 		private var player:Player;
 		private var playerObject: FlxObject;
@@ -41,13 +45,17 @@ package
 		private var fishLayer: FlxGroup;
 		private var krakeLayer: FlxGroup;
 		private var valitationlist: FlxGroup;
+		private var startLayer: FlxGroup;
+		
 		private var flag: Flag;
 		//container für die jew aktuelle boje/flagge
 		private var activeFlag: FlxSprite = null;
 		private var validation: FlxSprite = new FlxSprite(0, 0, validationImg);
 		private var validationText: FlxSprite = new FlxSprite(0, 0, validationTextImg);
+		private var startScreen: FlxSprite = new FlxSprite(0, 0, startImg);
 		
 		private var bOver: Boolean = false; //GameOver
+		private var isStart: Boolean = true; //StartScreen
 		
 		public const MAX_PLAYGROUND_HEIGHT: int =  FlxG.height;
 		public static const MAX_PLAYGROUND_WIDTH: int = 2000;
@@ -61,6 +69,8 @@ package
 
 		override public function create():void
 		{
+			add(startScreen);
+			
 			//globale lautstärkenänderung
 			FlxG.volume = 0.7;
 			//hintergrundmusik
@@ -72,7 +82,7 @@ package
 			//Hintergrundfarbe
 			FlxState.bgColor = 0xFF0000CC;
 			
-            player = new Player(20, 50);
+			player = new Player(20, 50);
 			
 			FlxG.follow(player);
 			FlxG.followBounds(0, 0, MAX_PLAYGROUND_WIDTH, MAX_PLAYGROUND_HEIGHT);
@@ -83,7 +93,7 @@ package
 			
 			//fische
 			fishLayer = new FlxGroup();
-		    var fish: FlxSprite;
+			var fish: FlxSprite;
 			for (var i: Number = 0; i < FISCHCOUNT; i++) {
 				fish= generateFishAtRandomPos();
 				fishLayer.add(fish);
@@ -94,8 +104,8 @@ package
 			
 			//Krake
 			krakeLayer = new FlxGroup();
-		    var krake: FlxSprite;
-			for (var i: Number = 0; i < KRAKENCOUNT; i++) {
+			var krake: FlxSprite;
+			for (var k: Number = 0; k < KRAKENCOUNT; k++) {
 				krake= generateKrakeAtRandomPos();
 				krakeLayer.add(krake);
 			}
@@ -105,13 +115,13 @@ package
 			//Bojen
 			flagLayer = new FlxGroup();
 			valitationlist = new FlxGroup();
-		    var flag: Flag;
+			var flag: Flag;
 			
 			//generiert flaggen
-			for (var i: Number = 0; i < BOJENCOUNT; i++) {
+			for (var j: Number = 0; j < BOJENCOUNT; j++) {
 				flag = generateFlagAtRandomPos();
 				flagLayer.add(flag);
-				if (i <= VALITATIONCOUNT) { 
+				if (j <= VALITATIONCOUNT) { 
 				  valitationlist.add(flag);
 				}
 			}
@@ -132,13 +142,11 @@ package
 			//text goes with camera
 			scoreText.scrollFactor = new FlxPoint(0, 0);
 			add(scoreText);
-			
-			//score
 	
 			//validationImg goes with camera, 0 indicates background/HUD element
 			validation.scrollFactor = new FlxPoint(0, 0);
 			validationText.scrollFactor = new FlxPoint(0, 0);
-			playerObject=this.add(player);
+			playerObject = this.add(player);
 		}
 		
 		private function getScore():String
@@ -187,6 +195,7 @@ package
 		private function collisionKrake(colKrake:FlxSprite, colPlayer:FlxSprite):void
 		{
 			DrawGameOver();
+			FlxG.play(collideOcto, 0.6, false);
 			bOver = true;
 		}
 		
@@ -195,7 +204,8 @@ package
 			colFish.visible = false;
 			
 			if (colFish.active) {
-			   score++;
+				FlxG.play(collectFish, 0.6, false);
+				score+=10;
 			}
 			colFish.active = false;
 		}
@@ -203,7 +213,7 @@ package
 		
 		private function DrawGameOver(): void
 		{
-			//text schwarz
+			//text schwarz (schatten)
 			//adds a 100px wide text field at position 0,0 (upper left)
 			var gameoverBlack: FlxText = new FlxText(200, 200, 400, "GAME OVER"); 
 		    gameoverBlack.setFormat(null, 37);
@@ -214,6 +224,7 @@ package
 			var gameoverWhite: FlxText = new FlxText(203, 202, 400, "GAME OVER"); //adds a 100px wide text field at position 0,0 (upper left)
 			gameoverWhite.setFormat(null, 36);
 			gameoverWhite.scrollFactor = new FlxPoint(0, 0);
+			gameoverWhite.shadow = 0x00000000;
 			add(gameoverWhite);
 		}
 		
@@ -241,25 +252,25 @@ package
 			if ((Y<110) || (Y>285)) return false;
 			
 			if (Y < 125) { //artificial areas
-				FlxG.play(validationSound, 1.0, false);
+				FlxG.play(validationSound,0.8, false);
 			}
 			else if (Y < 152) { //croplands
-				FlxG.play(validationSound, 1.0, false);
+				FlxG.play(validationSound, 0.8, false);
 			}
 			else if (Y < 180) { //Tree cover
-				FlxG.play(validationSound, 1.0, false);
+				FlxG.play(validationSound, 0.8, false);
 			} 
 			else if (Y < 207) { //natural vegetation
-				FlxG.play(validationSound, 1.0, false);
+				FlxG.play(validationSound, 0.8, false);
 			} 
 			else if (Y < 232) { //urban and built-up areas
-				FlxG.play(validationSound, 1.0, false);
+				FlxG.play(validationSound, 0.8, false);
 			} 
 			else if (Y < 259) { //shrub cover
-				FlxG.play(validationSound, 1.0, false);
+				FlxG.play(validationSound, 0.8, false);
 			} 
 			else if (Y < 284) { //not in list
-				FlxG.play(validationSound, 1.0, false);
+				FlxG.play(validationSound, 0.8, false);
 			} else return false
 			
 
@@ -289,15 +300,30 @@ package
 		public function winScreen():void
 		{
 			player.loadGraphic(gameWon);
-			var youwon: FlxText = new FlxText(80, 250, 200, "GOOD JOB!"); 
+			
+			var youwon: FlxText = new FlxText(80, 200, 200, "GOOD JOB!"); 
 		    youwon.setFormat(null, 25);
 			youwon.scrollFactor = new FlxPoint(0, 0);
+			
+			var endScore: FlxText = new FlxText(80, 250, 200, "Score: " + getScore());
+			endScore.setFormat(null, 25);
+			endScore.scrollFactor = new FlxPoint(0, 0);
+			
 			add(youwon);
+			add(endScore);
 		}
 	
 		override public function update():void
 		{
 			if (bOver) { return };
+			if (isStart)
+			{
+				if (FlxG.keys.ENTER) {
+					isStart = false;
+					startScreen.visible = false;
+				}
+				return;
+			}
 			
 			if (validation.visible) {	
 				var screenX:Number = FlxG.mouse.screenX;	
@@ -386,7 +412,7 @@ package
 				activeFlag.active = false;
 				
 				if (valitationlist.members.indexOf(activeFlag) > 0 ) {
-				  FlxG.play(validationFound, 1.0, false);
+				  FlxG.play(validationFound, 0.5, false);
 				  FlxG.mouse.show();
 				  FlxG.mouse.load(selectedCatImg);
 				  var i: int = (3*FlxU.random()) % 3;
@@ -408,7 +434,7 @@ package
 				  add(validationText);
 				  
 				  activeFlag.loadGraphic(validationFlag);
-				  score++;
+				  score+=5;
 				}
 			}
 			super.update();
