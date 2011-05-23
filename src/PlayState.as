@@ -18,7 +18,7 @@ package
 		private var minutes:int, seconds: int; 
 		private var secondsstr: String;
 		private var cnt: int = 0;
-		private var score: int = 50;
+		private var score: int = 0;
 		
 		private var flagLayer:FlxGroup;
 		private var valitationlist: FlxGroup;
