@@ -1,9 +1,7 @@
 package
 {
-	import flash.display.InteractiveObject;
-	import org.flixel.*;
 	import flash.utils.*;
-	import org.flixel.data.FlxAnim;
+	import org.flixel.*;
 
 	
 	public class PlayState extends FlxState
@@ -12,6 +10,7 @@ package
 		[Embed(source = "fahne2.png")] private var redFlag:Class;
 		[Embed(source = "fahneValidation.png")] private var validationFlag:Class;
 		[Embed(source = "validation.png")] private var validationImg:Class;
+		[Embed(source = "tada.mp3")] private var validationSound:Class;
 
 		private var player:Player;
 		private var playerObject: FlxObject;
@@ -23,7 +22,6 @@ package
 		private var cnt: int = 0;
 		private var score: int = 0;
 		private var button:FlxButton;
-		
 		
 		private var flagLayer:FlxGroup;
 		private var valitationlist: FlxGroup;
@@ -43,6 +41,9 @@ package
 
 		override public function create():void
 		{
+			//globale lautstärkenänderung
+			FlxG.volume = 1;
+			
 			add(waves);
 			validation.visible = false;
 			//Hintergrundfarbe
@@ -173,15 +174,13 @@ package
 			return false;
 		}
 	
-		  
-		
-		
 		override public function update():void
 		{
 			if (bOver) { return };
 			
 			if (validation.visible) {
 				if (FlxG.keys.justPressed('ENTER')) {
+					FlxG.play(validationSound, 1.0, false);
 					validation.visible = false;
 				}
 				return;
