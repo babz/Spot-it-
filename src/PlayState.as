@@ -9,6 +9,7 @@ package
 	{
 	    [Embed(source = "fahne.png")] private var yellowFlag:Class;
 		[Embed(source = "fahne2.png")] private var redFlag:Class;
+		[Embed(source = "fahneValidation.png")] private var validationFlag:Class;
 		[Embed(source = "validation.png")] private var validationImg:Class;
 
 		private var player:Player;
@@ -28,7 +29,8 @@ package
 		//TODO: bei FlxG.height - 5 zählt er die 5 vom oberen rand weg; wir wollen keine halben img sehen
 		public const MAX_PLAYGROUND_HEIGHT: int =  FlxG.height;
 		public static const MAX_PLAYGROUND_WIDTH: int = 1500;
-		public const VALITATIONCOUNT: int = 20;
+		public const VALITATIONCOUNT: int = 15;
+		public static const BOJEN_DISTANCE: int = 100;
 
 		private var waves:water = new water(70,1);
 
@@ -55,7 +57,7 @@ package
 		    var flag: Flag;
 			
 			//generiert flaggen
-			for (var i: Number = 0; i < 70; i++) {
+			for (var i: Number = 0; i < 50; i++) {
 				flag = generateFlagAtRandomPos();
 				flagLayer.add(flag);
 				if (i <= VALITATIONCOUNT) { 
@@ -82,13 +84,18 @@ package
 		{
 			var heightRand : Number = Math.round(MAX_PLAYGROUND_HEIGHT * FlxU.random());
 			var widthRand : Number = Math.round(MAX_PLAYGROUND_WIDTH * FlxU.random());
+			if (isBojeAlreadyThere(widthRand, heightRand)) {
+				return generateFlagAtRandomPos();
+			}
 			return new Flag(widthRand, heightRand);
 		}
 		
 		private function collisionFlag(colFlag:FlxSprite, colPlayer:FlxSprite):void
 		{
-			activeFlag = colFlag;
-			activeFlag.loadGraphic(redFlag);
+			if (activeFlag==null) {
+			  activeFlag = colFlag;
+			  activeFlag.loadGraphic(redFlag);
+			}
 		}
 		
 		private function DrawGameOver(): void
@@ -107,6 +114,45 @@ package
 			add(gameoverWhite);
 		}
 		
+		private function getValidationCnt(flag: FlxSprite): int
+		{
+			var cnt: int =0;
+			var o:FlxSprite;
+			
+			for ( var i:int = 0; i < valitationlist.members.length; i++ ) {
+				o = valitationlist.members[i] as FlxSprite;
+				if (flag!=o) {
+				  if (((o.x == (flag.x - BOJEN_DISTANCE)) || (o.x == (flag.x + BOJEN_DISTANCE)) || (o.x == flag.x)) && 
+				   ((o.y == (flag.y - BOJEN_DISTANCE)) || (o.y == (flag.y + BOJEN_DISTANCE)) || (o.y == flag.y))) {
+					cnt++;
+				   }
+				}
+				
+			}
+			return cnt;
+		}
+		
+		private function isBojeAlreadyThere(X,Y: int): Boolean
+		{
+			//Nach Raster orientiert
+			X = Math.floor(X / PlayState.BOJEN_DISTANCE) * PlayState.BOJEN_DISTANCE;
+			Y = Math.floor(Y / PlayState.BOJEN_DISTANCE) * PlayState.BOJEN_DISTANCE
+			//damit oberer Rand frei bleibt
+			Y = Y + 32;
+			
+			var o:FlxSprite;
+			
+			for ( var i:int = 0; i < flagLayer.members.length; i++ ) {
+				o = flagLayer.members[i] as FlxSprite;
+				if ((o.x == X) && (o.y == Y)) {
+					return true;
+				}
+			}
+			
+			return false;
+		}
+		  
+		  
 		
 		
 		override public function update():void
@@ -121,7 +167,9 @@ package
 			}
 			var sl: int;
 			if (activeFlag != null) {
-				activeFlag.loadGraphic(yellowFlag);
+				if ((!activeFlag.active) && (valitationlist.members.indexOf(activeFlag) > 0 )) {
+					activeFlag.loadGraphic(validationFlag);
+				} else {activeFlag.loadGraphic(yellowFlag);}
 			}
 			activeFlag = null;
 			
@@ -170,11 +218,14 @@ package
 				  validation.y = 40;
 				  validation.visible = true;
 				  add(validation);
+				  activeFlag.loadGraphic(validationFlag);
 				}
 				  
 				//activeFlag.kill();  //doch nicht killen
 				//TODO: nicht eins rein schreiben, sondern die Anzahl der Valitations rundherum
-				var valitionText: FlxText = new FlxText(activeFlag.x+15, activeFlag.y+15, 200, "1"); //adds a 100px wide text field at position 0,0 (upper left)
+				var validationcnt: int = 0;
+				validationcnt = getValidationCnt(activeFlag);
+				var valitionText: FlxText = new FlxText(activeFlag.x+15, activeFlag.y+15, 200, ""+validationcnt); //adds a 100px wide text field at position 0,0 (upper left)
 			    valitionText.setFormat(null, 16);
 				valitionText.color = 0x00000000;
 			    add(valitionText);

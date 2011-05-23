@@ -8,8 +8,8 @@ package
         public function Flag(X:Number = 0, Y:Number = 0):void
         {
 			//Nach Raster orientiert
-			X = Math.floor(X / 100) * 100;
-			Y = Math.floor(Y / 100) * 100;
+			X = Math.floor(X / PlayState.BOJEN_DISTANCE) * PlayState.BOJEN_DISTANCE;
+			Y = Math.floor(Y / PlayState.BOJEN_DISTANCE) * PlayState.BOJEN_DISTANCE
 			//damit oberer Rand frei bleibt
 			Y = Y + 32;
             super(X, Y, yellowFlag);
