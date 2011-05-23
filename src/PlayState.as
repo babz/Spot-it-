@@ -11,8 +11,8 @@ package
 		[Embed(source = "fahneValidation.png")] private var validationFlag:Class;
 		[Embed(source = "validation1.png")] private var validationImg:Class;
 		[Embed(source = "validationtext.png")] private var validationTextImg:Class;
-		[Embed(source = "tada.mp3")] private var validationSound:Class;
-
+		[Embed(source = "tada.mp3")] private var validationFound:Class;
+		[Embed(source = "validationSound.mp3")] private var validationSound:Class;
 		[Embed(source = "arrow.png")] private var selectedCatImg:Class;
 		[Embed(source = "boat_toLeft.png")] private var playerImgLeft:Class;
 		[Embed(source = "boat_big.png")] private var playerImgRight:Class;
@@ -168,25 +168,25 @@ package
 			if ((Y<110) || (Y>285)) return false;
 			
 			if (Y < 125) { //artificial areas
-				
+				FlxG.play(validationSound, 1.0, false);
 			}
 			else if (Y < 152) { //croplands
-				
+				FlxG.play(validationSound, 1.0, false);
 			}
 			else if (Y < 180) { //Tree cover
-				
+				FlxG.play(validationSound, 1.0, false);
 			} 
 			else if (Y < 207) { //natural vegetation
-				
+				FlxG.play(validationSound, 1.0, false);
 			} 
 			else if (Y < 232) { //urban and built-up areas
-				
+				FlxG.play(validationSound, 1.0, false);
 			} 
 			else if (Y < 259) { //shrub cover
-				
+				FlxG.play(validationSound, 1.0, false);
 			} 
 			else if (Y < 284) { //not in list
-				
+				FlxG.play(validationSound, 1.0, false);
 			} else return false
 			
 
@@ -300,7 +300,7 @@ package
 				activeFlag.active = false;
 				
 				if (valitationlist.members.indexOf(activeFlag) > 0 ) {
-				  FlxG.play(validationSound, 1.0, false);
+				  FlxG.play(validationFound, 1.0, false);
 				  FlxG.mouse.show();
 				  FlxG.mouse.load(selectedCatImg);
 				  validation.x = 100;
