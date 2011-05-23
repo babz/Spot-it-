@@ -38,7 +38,6 @@ package
 		
 		private var bOver: Boolean = false; //GameOver
 		
-		//TODO: bei FlxG.height - 5 zählt er die 5 vom oberen rand weg; wir wollen keine halben img sehen
 		public const MAX_PLAYGROUND_HEIGHT: int =  FlxG.height;
 		public static const MAX_PLAYGROUND_WIDTH: int = 2000;
 		public const VALITATIONCOUNT: int = 15;
