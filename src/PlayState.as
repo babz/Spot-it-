@@ -11,8 +11,12 @@ package
 		[Embed(source = "fahneValidation.png")] private var validationFlag:Class;
 		[Embed(source = "validation1.png")] private var validationImg:Class;
 		[Embed(source = "validationtext.png")] private var validationTextImg:Class;
+		
+		//Sounds
 		[Embed(source = "tada.mp3")] private var validationFound:Class;
 		[Embed(source = "validationSound.mp3")] private var validationSound:Class;
+		[Embed(source = "Freestyler.mp3")] private var backgroundMusic:Class;
+		
 		[Embed(source = "arrow.png")] private var selectedCatImg:Class;
 		[Embed(source = "boat_toLeft.png")] private var playerImgLeft:Class;
 		[Embed(source = "boat_big.png")] private var playerImgRight:Class;
@@ -50,6 +54,8 @@ package
 		{
 			//globale lautstärkenänderung
 			FlxG.volume = 0.7;
+			//hintergrundmusik
+			FlxG.playMusic(backgroundMusic, 1.0);
 			
 			add(waves);
 			validation.visible = false;
