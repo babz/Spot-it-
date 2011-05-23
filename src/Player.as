@@ -16,7 +16,6 @@ package
 			if (this.x <= 0) {
 				this.x = 0;
 			} 
-			//TODO: dont let the boat go outside x
 			else if (x > PlayState.MAX_PLAYGROUND_WIDTH - width) {
 				this.x = PlayState.MAX_PLAYGROUND_WIDTH-this.width;
 			}
