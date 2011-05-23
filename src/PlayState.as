@@ -9,6 +9,7 @@ package
 	    [Embed(source = "fahne.png")] private var yellowFlag:Class;
 		[Embed(source = "fahne2.png")] private var redFlag:Class;
 		[Embed(source = "fahneValidation.png")] private var validationFlag:Class;
+		[Embed(source = "krake.gif")] private var krakenImg:Class;
 		[Embed(source = "validation1.png")] private var validationImg:Class;
 		[Embed(source = "validation2.png")] private var validationImg2:Class;
 		[Embed(source = "validation3.png")] private var validationImg3:Class;
