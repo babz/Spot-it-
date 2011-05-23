@@ -38,6 +38,8 @@ package
 
 		override public function create():void
 		{
+			FlxG.volume = 1;
+			
 			add(waves);
 			validation.visible = false;
 			//Hintergrundfarbe
