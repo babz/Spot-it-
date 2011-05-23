@@ -226,6 +226,7 @@ package
 			if(FlxG.keys.RIGHT)
 			{
 				player.x += 3;
+				//player.facing = DOWN;
 			} else if(FlxG.keys.LEFT)
 			{
 				player.x -= 3;
