@@ -1,17 +1,20 @@
 package
 {
-	import flash.utils.*;
+	import flash.display.InteractiveObject;
 	import org.flixel.*;
- 
+	import flash.utils.*;
+	import org.flixel.data.FlxAnim;
+
+	
 	public class PlayState extends FlxState
 	{
 	    [Embed(source = "fahne.png")] private var yellowFlag:Class;
 		[Embed(source = "fahne2.png")] private var redFlag:Class;
 		[Embed(source = "fahneValidation.png")] private var validationFlag:Class;
 		[Embed(source = "validation.png")] private var validationImg:Class;
-		[Embed(source = "tada.mp3")] private var validationSound:Class;
 
 		private var player:Player;
+		private var playerObject: FlxObject;
 		
 		private var textState: FlxText;
 		private var scoreText: FlxText;
@@ -19,6 +22,8 @@ package
 		private var secondsstr: String;
 		private var cnt: int = 0;
 		private var score: int = 0;
+		private var button:FlxButton;
+		
 		
 		private var flagLayer:FlxGroup;
 		private var valitationlist: FlxGroup;
@@ -34,12 +39,10 @@ package
 		public static const BOJEN_DISTANCE: int = 100;
 		public const BOJENCOUNT: int = 50;
 
-		private var waves:water = new water(70,1);
+		private var waves:water = new water(70, 1);
 
 		override public function create():void
 		{
-			FlxG.volume = 1;
-			
 			add(waves);
 			validation.visible = false;
 			//Hintergrundfarbe
@@ -85,10 +88,12 @@ package
 			scoreText.scrollFactor = new FlxPoint(0, 0);
 			add(scoreText);
 			
+			//score
+	
 			//validationImg goes with camera, 0 indicates background/HUD element
 			validation.scrollFactor = new FlxPoint(0, 0);
 			
-			this.add(player);
+			playerObject=this.add(player);
 		}
 		
 		private function getScore():String
@@ -167,12 +172,9 @@ package
 			
 			return false;
 		}
+	
 		  
-		  
-		public function playSound():void 
-		{
-			FlxG.play(validationSound, 1.0, false);
-		}
+		
 		
 		override public function update():void
 		{
@@ -180,7 +182,6 @@ package
 			
 			if (validation.visible) {
 				if (FlxG.keys.justPressed('ENTER')) {
-					playSound();
 					validation.visible = false;
 				}
 				return;
@@ -242,21 +243,28 @@ package
 				  validation.visible = true;
 				  add(validation);
 				  activeFlag.loadGraphic(validationFlag);
+				  score++;
 				}
-				  
-				//activeFlag.kill();  //doch nicht killen
-				//TODO: nicht eins rein schreiben, sondern die Anzahl der Valitations rundherum
+				 
 				var validationcnt: int = 0;
 				validationcnt = getValidationCnt(activeFlag);
 				var valitionText: FlxText = new FlxText(activeFlag.x+15, activeFlag.y+15, 200, ""+validationcnt); //adds a 100px wide text field at position 0,0 (upper left)
 			    valitionText.setFormat(null, 16);
 				valitionText.color = 0x00000000;
-			    add(valitionText);
-				//todo: valitationText hinter dem Player zeichnen
+				//Text muss hinter dem Boot gezeichnet werden, deshalb muss es in der 
+				//Render-Pipeline (defaultgroup) weiter vorne stehen --> da es kein
+				//insert gibt, wird es mit dem player vertauscht und der player
+				//nachher noch einmal hinzugefügt
+			    var newObject: FlxObject=add(valitionText);
+				defaultGroup.replace(playerObject, newObject);
+				add(playerObject);
 				
 				activeFlag.active = false;
 			}
 			super.update();
 		}
+		
 	}
+	
+	
 }
