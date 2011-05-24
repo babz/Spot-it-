@@ -1,5 +1,6 @@
 package
 {
+	import flash.sampler.NewObjectSample;
 	import flash.utils.*;
 	import org.flixel.*;
 
@@ -216,19 +217,21 @@ package
 		
 		private function DrawGameOver(): void
 		{
-			//text schwarz (schatten)
-			//adds a 100px wide text field at position 0,0 (upper left)
-			var gameoverBlack: FlxText = new FlxText(200, 200, 400, "GAME OVER"); 
-		    gameoverBlack.setFormat(null, 37);
-			gameoverBlack.color = 0x00000000;
-			gameoverBlack.scrollFactor = new FlxPoint(0, 0);
-			add(gameoverBlack);
+			killAll();
+			
 			//text weiss
 			var gameoverWhite: FlxText = new FlxText(203, 202, 400, "GAME OVER"); //adds a 100px wide text field at position 0,0 (upper left)
-			gameoverWhite.setFormat(null, 36);
+			gameoverWhite.size = 36;
 			gameoverWhite.scrollFactor = new FlxPoint(0, 0);
 			gameoverWhite.shadow = 0x00000000;
 			add(gameoverWhite);
+			
+			var wannaReplay: FlxText = new FlxText(MAX_PLAYGROUND_WIDTH / 3, 230, 400, "Press [ENTER] to try again");
+			wannaReplay.size = 36;
+			//text goes with camera, 0 indicates background/HUD element
+			wannaReplay.scrollFactor = new FlxPoint(0, 0);
+			add(wannaReplay);
+			
 		}
 		
 		private function getValidationCnt(flag: FlxSprite): int
@@ -300,13 +303,18 @@ package
 			return false;
 		}
 		
-		public function winScreen():void
+		private function killAll():void
 		{
 			player.kill();
 			flagLayer.kill();
 			fishLayer.kill();
 			krakeLayer.kill();
 			valitationlist.kill();
+		}
+		
+		public function winScreen():void
+		{
+			killAll();
 			
 			win.visible = true;
 			FlxG.follow(win);
@@ -322,10 +330,24 @@ package
 			add(youwon);
 			add(endScore);
 		}
+		
+		private function oneMoreTime():void
+		{
+			
+		}
+		
 	
 		override public function update():void
 		{
-			if (bOver) { return };
+			if (bOver) 
+			{	
+				if (FlxG.keys.ENTER) {
+					bOver = false;
+					//TODO resetGame
+					//FlxG.resetGame();
+				}
+				return;
+			}
 			if (isStart)
 			{
 				if (FlxG.keys.ENTER) {
@@ -335,6 +357,7 @@ package
 				return;
 			}
 			
+			//validierung druchfuehren
 			if (validation.visible) {	
 				var screenX:Number = FlxG.mouse.screenX;	
 				var screenY:Number = FlxG.mouse.screenY;	
@@ -445,6 +468,8 @@ package
 				  activeFlag.loadGraphic(validationFlag);
 				  score+=5;
 				}
+				
+				
 			}
 			super.update();
 		}
