@@ -226,12 +226,7 @@ package
 			gameoverWhite.shadow = 0x00000000;
 			add(gameoverWhite);
 			
-			var wannaReplay: FlxText = new FlxText(MAX_PLAYGROUND_WIDTH / 3, 230, 400, "Press [ENTER] to try again");
-			wannaReplay.size = 36;
-			//text goes with camera, 0 indicates background/HUD element
-			wannaReplay.scrollFactor = new FlxPoint(0, 0);
-			add(wannaReplay);
-			
+			oneMoreTime();
 		}
 		
 		private function getValidationCnt(flag: FlxSprite): int
@@ -329,11 +324,16 @@ package
 			
 			add(youwon);
 			add(endScore);
+			oneMoreTime();
 		}
 		
 		private function oneMoreTime():void
 		{
-			
+			var wannaReplay: FlxText = new FlxText(170, 300, 400, "Press [ENTER] to try again");
+			wannaReplay.size = 20;
+			//text goes with camera, 0 indicates background/HUD element
+			wannaReplay.scrollFactor = new FlxPoint(0, 0);
+			add(wannaReplay);
 		}
 		
 	
