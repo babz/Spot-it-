@@ -15,7 +15,7 @@ package
 		[Embed(source = "validationtext.png")] private var validationTextImg:Class;
 		
 		[Embed(source = "end.jpg")] private var gameWon:Class;
-		[Embed(source = "StartScreen.jpg")] private var startImg:Class;
+		[Embed(source = "Start.png")] private var startImg:Class;
 		
 		[Embed(source = "fisch.png")] private var fischImg:Class;
 		[Embed(source = "krake.png")] private var krakeImg:Class;
@@ -45,7 +45,6 @@ package
 		private var fishLayer: FlxGroup;
 		private var krakeLayer: FlxGroup;
 		private var valitationlist: FlxGroup;
-		private var startLayer: FlxGroup;
 		
 		private var flag: Flag;
 		//container für die jew aktuelle boje/flagge
@@ -53,6 +52,7 @@ package
 		private var validation: FlxSprite = new FlxSprite(0, 0, validationImg);
 		private var validationText: FlxSprite = new FlxSprite(0, 0, validationTextImg);
 		private var startScreen: FlxSprite = new FlxSprite(0, 0, startImg);
+		private var win: FlxSprite = new FlxSprite(0, 0, gameWon);
 		
 		private var bOver: Boolean = false; //GameOver
 		private var isStart: Boolean = true; //StartScreen
@@ -69,8 +69,6 @@ package
 
 		override public function create():void
 		{
-			add(startScreen);
-			
 			//globale lautstärkenänderung
 			FlxG.volume = 0.7;
 			//hintergrundmusik
@@ -88,8 +86,8 @@ package
 			FlxG.followBounds(0, 0, MAX_PLAYGROUND_WIDTH, MAX_PLAYGROUND_HEIGHT);
 
 			//Startzeit
-			minutes = 1;
-			seconds = 0;
+			minutes = 0;
+			seconds = 10;
 			
 			//fische
 			fishLayer = new FlxGroup();
@@ -147,6 +145,11 @@ package
 			validation.scrollFactor = new FlxPoint(0, 0);
 			validationText.scrollFactor = new FlxPoint(0, 0);
 			playerObject = this.add(player);
+			
+			add(startScreen);
+			
+			win.visible = false;
+			add(win);
 		}
 		
 		private function getScore():String
@@ -299,7 +302,14 @@ package
 		
 		public function winScreen():void
 		{
-			player.loadGraphic(gameWon);
+			player.kill();
+			flagLayer.kill();
+			fishLayer.kill();
+			krakeLayer.kill();
+			valitationlist.kill();
+			
+			win.visible = true;
+			FlxG.follow(win);
 			
 			var youwon: FlxText = new FlxText(80, 200, 200, "GOOD JOB!"); 
 		    youwon.setFormat(null, 25);
@@ -320,7 +330,7 @@ package
 			{
 				if (FlxG.keys.ENTER) {
 					isStart = false;
-					startScreen.visible = false;
+					startScreen.kill();
 				}
 				return;
 			}
@@ -363,7 +373,6 @@ package
 						minutes = 0;
 						bOver = true;
 						winScreen();
-						
 					} else {
 					  minutes --;
 					}
