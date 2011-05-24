@@ -46,6 +46,7 @@ package
 		private var fishLayer: FlxGroup;
 		private var krakeLayer: FlxGroup;
 		private var valitationlist: FlxGroup;
+		private var valitationCountsList: FlxGroup;
 		
 		private var flag: Flag;
 		//container für die jew aktuelle boje/flagge
@@ -87,8 +88,10 @@ package
 			FlxG.followBounds(0, 0, MAX_PLAYGROUND_WIDTH, MAX_PLAYGROUND_HEIGHT);
 
 			//Startzeit
-			minutes = 0;
-			seconds = 10;
+			minutes = 1;
+			seconds = 0;
+			
+			valitationCountsList = new FlxGroup();
 			
 			//fische
 			fishLayer = new FlxGroup();
@@ -172,6 +175,7 @@ package
 		{
 			var heightRand : Number = Math.round((MAX_PLAYGROUND_HEIGHT-40) * FlxU.random());
 			var widthRand : Number = Math.round((MAX_PLAYGROUND_WIDTH - 40) * FlxU.random());
+			//an der Stelle wo das Boot startet keine Krake 
 			if ((heightRand < 150) && (widthRand < 150)) { 
 				return generateKrakeAtRandomPos() 
 			} else {
@@ -238,7 +242,7 @@ package
 				o = valitationlist.members[i] as FlxSprite;
 				if (flag!=o) {
 				  if (((o.x == (flag.x - BOJEN_DISTANCE)) || (o.x == (flag.x + BOJEN_DISTANCE)) || (o.x == flag.x)) && 
-				   ((o.y == (flag.y - BOJEN_DISTANCE)) || (o.y == (flag.y + BOJEN_DISTANCE)) || (o.y == flag.y))) {
+				   ((o.y == (flag.y - BOJEN_DISTANCE)) || (o.y == (flag.y + BOJEN_DISTANCE)) || (o.y == flag.y))  ) {
 					cnt++;
 				   }
 				}
@@ -286,6 +290,11 @@ package
 			//damit oberer Rand frei bleibt
 			Y = Y + 32;
 			
+			//die ersten beiden bojen oben rechts nicht zeichen, da da das Boot am Anfang steht
+			if ((Y==32) && ((X==PlayState.BOJEN_DISTANCE) || (X==0))) {
+				return true;
+			}
+			
 			var o:FlxSprite;
 			
 			for ( var i:int = 0; i < flagLayer.members.length; i++ ) {
@@ -305,6 +314,7 @@ package
 			fishLayer.kill();
 			krakeLayer.kill();
 			valitationlist.kill();
+			valitationCountsList.kill();
 		}
 		
 		public function winScreen():void
@@ -335,16 +345,18 @@ package
 			wannaReplay.scrollFactor = new FlxPoint(0, 0);
 			add(wannaReplay);
 		}
+	
+
 		
 	
 		override public function update():void
 		{
-			if (bOver) 
+			if ((bOver) || (win.visible))
 			{	
 				if (FlxG.keys.ENTER) {
 					bOver = false;
-					//TODO resetGame
-					//FlxG.resetGame();
+					this.destroy();
+					FlxG.state = new PlayState();
 				}
 				return;
 			}
@@ -437,7 +449,9 @@ package
 				//Render-Pipeline (defaultgroup) weiter vorne stehen --> da es kein
 				//insert gibt, wird es mit dem player vertauscht und der player
 				//nachher noch einmal hinzugefügt
-			    var newObject: FlxObject=add(valitionText);
+			    var newObject: FlxObject = add(valitionText);
+				valitationCountsList.add(newObject);
+				
 				defaultGroup.replace(playerObject, newObject);
 				add(playerObject);
 				
@@ -473,6 +487,7 @@ package
 			}
 			super.update();
 		}
+
 		
 	}
 	

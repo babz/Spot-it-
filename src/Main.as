@@ -8,10 +8,9 @@ package
 	public class Main extends FlxGame
 	{
 		
-		
 		public function Main()
 		{
-			super(640, 480, PlayState, 1); //Create a new FlxGame object at 640x480 with 1x pixels, then load PlayState
+			super(640, 480, PlayState, 1); //Create a new FlxGame object at 640x480 with 1x pixels, then load PlayState		
 		}
 	}
 }
